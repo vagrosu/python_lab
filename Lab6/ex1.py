@@ -3,6 +3,7 @@ import sys
 
 
 def read_files(path, extension):
+    global file
     if os.path.isdir(path):
         for root, _, files in os.walk(path):
             for file_name in files:
@@ -19,6 +20,8 @@ def read_files(path, extension):
                         print(f"Permission denied for file: {full_path}")
                     except Exception as e:
                         print(f"Error opening file {full_path}: {e}")
+                    finally:
+                        file.close()
     else:
         print("Invalid path")
 
