@@ -6,8 +6,8 @@ def compute_size(dir_path):
     total_size = 0
     for root, dirs, files in os.walk(dir_path):
         for file in files:
+            full_path = os.path.join(root, file)
             try:
-                full_path = os.path.join(root, file)
                 total_size += os.path.getsize(full_path)
             except FileNotFoundError:
                 print(f"File not found: {full_path}")

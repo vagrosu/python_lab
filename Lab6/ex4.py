@@ -6,8 +6,8 @@ def get_extensions(dir_path):
     extensions = {}
     for root, dirs, files in os.walk(dir_path):
         for file in files:
+            full_path = os.path.join(root, file)
             try:
-                full_path = os.path.join(root, file)
                 extension = os.path.splitext(full_path)[1]
                 if extension in extensions:
                     extensions[extension] += 1
