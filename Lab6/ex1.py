@@ -7,7 +7,7 @@ def read_files(path, extension):
     if os.path.isdir(path):
         for root, _, files in os.walk(path):
             for file_name in files:
-                if file_name.endswith(extension):
+                if os.path.splitext(file_name)[1] == extension:
                     full_path = os.path.join(root, file_name)
                     try:
                         file = open(full_path, mode='r')

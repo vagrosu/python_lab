@@ -3,19 +3,22 @@ import sys
 
 
 def compute_size(dir_path):
-    total_size = 0
-    for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            full_path = os.path.join(root, file)
-            try:
-                total_size += os.path.getsize(full_path)
-            except FileNotFoundError:
-                print(f"File not found: {full_path}")
-            except PermissionError:
-                print(f"Permission denied for file: {full_path}")
-            except Exception as e:
-                print(f"Error accessing file {full_path}: {e}")
-    print(f"Total size: {total_size} bytes")
+    if os.path.isdir(dir_path):
+        total_size = 0
+        for root, dirs, files in os.walk(dir_path):
+            for file in files:
+                full_path = os.path.join(root, file)
+                try:
+                    total_size += os.path.getsize(full_path)
+                except FileNotFoundError:
+                    print(f"File not found: {full_path}")
+                except PermissionError:
+                    print(f"Permission denied for file: {full_path}")
+                except Exception as e:
+                    print(f"Error accessing file {full_path}: {e}")
+        print(f"Total size: {total_size} bytes")
+    else:
+        print("Invalid path")
 
 
 if __name__ == '__main__':
