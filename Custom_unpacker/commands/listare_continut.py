@@ -61,6 +61,9 @@ def get_archive_files(archive_path):
 
 
 def print_archive_files(archive_path, archive_files):
+    if len(archive_files) == 0:
+        raise Exception(f"Archive {archive_path} is empty")
+
     print(f"Archive {archive_path} files:")
     for file in archive_files:
         print(f" -> {file}")
