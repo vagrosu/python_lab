@@ -54,7 +54,7 @@ def handle_custom_args(args, filename):
 
     if args[0] == "--help":
         handle_help()
-        return
+        exit(0)
     elif args[0] == "--filename":
         if len(args) < 2:
             raise IllegalArgumentException("No filename provided", "creare_arhiva")
