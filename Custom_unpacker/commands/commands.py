@@ -7,10 +7,11 @@ from exceptions.InvalidCommandException import InvalidCommandException
 
 def handle_help_command(*args):
     print("Available commands:")
-    print(" - creare_arhiva")
-    print(" - listare_continut")
-    print(" - full_unpack")
-    print(" - unpack")
+    print(" -> creare_arhiva")
+    print(" -> listare_continut")
+    print(" -> full_unpack")
+    print(" -> unpack")
+    print(" -> --help")
 
 
 def handle_command(command, args):

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     except IllegalArgumentException as e:
         print("Error: " + e.message)
         for error in e.errors:
-            print(" - " + error)
+            print(" -> " + error)
 
     except InvalidCommandException as e:
         print("Error: " + e.message)

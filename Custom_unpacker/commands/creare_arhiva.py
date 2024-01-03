@@ -66,7 +66,7 @@ def handle_custom_args(args, filename):
 
 
 def handle_help():
-    print("Usage: creare_arhiva [--filename name] <path> [<path> ...]")
+    print("Usage: creare_arhiva [--filename name] <file/dir path> [<file path> ...]")
 
 
 def add_extension(filename):
