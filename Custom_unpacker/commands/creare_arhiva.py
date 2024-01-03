@@ -77,6 +77,12 @@ def add_extension(filename):
     return new_filename
 
 
+def remove_parent_directory(path):
+    parts = path.split(os.sep)
+    new_parts = [part for part in parts if part and part != "."][1:]
+    return os.sep.join(new_parts)
+
+
 def create_archive_file(filename):
     if filename is not None:
         if os.path.exists(add_extension(filename)):
@@ -92,15 +98,40 @@ def create_archive_file(filename):
             filename = new_filename
 
     try:
-        return open(add_extension(filename), "w")
+        return open(add_extension(filename), "ab")
     except IOError as e:
         raise IOError(f"Cannot create archive file {add_extension(filename)}: {e.strerror}")
     except Exception as e:
         raise Exception(f"Cannot create archive file {add_extension(filename)}: {e}")
 
 
-def write_to_archive_file(file, paths):
-    print(file, paths)
+def add_file_to_archive(archive, file_path):
+    try:
+        with open(file_path, "rb") as file:
+            content = file.read()
+        metadata = f"<#METADATA_START#>{remove_parent_directory(file_path)}&{len(content)}<#METADATA_END#>\n"
+
+        archive.write(metadata.encode("utf-8"))
+        archive.write(content)
+        archive.write(b"\n")
+        archive.flush()
+        print(f"File {file_path} archived successfully")
+    except IOError as e:
+        raise IOError(f"Cannot read file {file_path}: {e.strerror}")
+    except Exception as e:
+        raise Exception(f"Cannot read file {file_path}: {e}")
+
+
+def write_to_archive_file(archive, file_paths):
+    if os.path.isdir(file_paths[0]):
+        for root, folders, files in os.walk(file_paths[0]):
+            for file in files:
+                if not file.startswith('.'):
+                    add_file_to_archive(archive, os.path.join(root, file))
+    else:
+        for path in file_paths:
+            add_file_to_archive(archive, path)
+    archive.close()
 
 
 def handle_creare_arhiva_command(args):
@@ -112,5 +143,7 @@ def handle_creare_arhiva_command(args):
         raise IllegalArgumentException("Invalid arguments", "creare_arhiva", args_validation_errors)
 
     if len(paths) > 0:
-        archive = None #create_archive_file(filename)
+        archive = create_archive_file(filename)
         write_to_archive_file(archive, paths)
+
+        print(f"Archive {archive.name} created successfully")
