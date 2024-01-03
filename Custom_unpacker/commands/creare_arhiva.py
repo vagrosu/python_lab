@@ -68,21 +68,46 @@ def handle_help():
     print("Usage: creare_arhiva [--filename name] <path> [<path> ...]")
 
 
+def add_extension(filename):
+    new_filename = filename
+    if not filename.endswith(".cunp"):
+        new_filename = f"{filename}.cunp"
+
+    return new_filename
+
+
 def create_archive_file(filename):
     if filename is not None:
-        if os.path.exists(filename):
-            raise IllegalArgumentException(f"Cannot create archive, file {filename} already exists", "creare_arhiva")
-    # else:
+        if os.path.exists(add_extension(filename)):
+            raise IllegalArgumentException(f"Cannot create archive, file {add_extension(filename)} already exists", "creare_arhiva")
+    else:
+        filename = "archive"
+        if os.path.exists(add_extension(filename)):
+            i = 1
+            new_filename = f"{filename}({i})"
+            while os.path.exists(add_extension(new_filename)):
+                i += 1
+                new_filename = f"{filename}({i})"
+            filename = new_filename
+
+    try:
+        return open(add_extension(filename), "w")
+    except IOError as e:
+        raise IOError(f"Cannot create archive file {add_extension(filename)}: {e.strerror}")
+    except Exception as e:
+        raise Exception(f"Cannot create archive file {add_extension(filename)}: {e}")
+
+
+def write_to_archive_file(file, paths):
+    print(file, paths)
 
 
 def handle_creare_arhiva_command(args):
     filename = None
     (args, filename) = handle_custom_args(args, filename)
-    print(args, filename)
     args_validation_errors = validate_paths(args)
     if len(args_validation_errors) > 0:
         raise IllegalArgumentException("Invalid arguments", "creare_arhiva", args_validation_errors)
 
     file = create_archive_file(filename)
-
-    print("Create archive", args)
+    write_to_archive_file(file, args)
