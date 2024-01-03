@@ -3,34 +3,34 @@ import os.path
 from exceptions.IllegalArgumentException import IllegalArgumentException
 
 
-def validate_paths(args):
-    if len(args) < 1:
+def validate_paths(paths):
+    if len(paths) < 1:
         return ["No paths provided"]
 
     errors = []
-    has_multiple_args = len(args) > 1
+    has_multiple_paths = len(paths) > 1
 
-    for i in range(len(args)):
-        if os.path.exists(args[i]) is False:
-            errors.append(f"Path {args[i]} does not exist")
+    for i in range(len(paths)):
+        if os.path.exists(paths[i]) is False:
+            errors.append(f"Path {paths[i]} does not exist")
             continue
 
-        if has_multiple_args:
-            if os.path.isfile(args[i]) is False:
+        if has_multiple_paths:
+            if os.path.isfile(paths[i]) is False:
                 errors.append("For multiple arguments, all must be files")
                 continue
 
-        if os.path.isfile(args[i]):
-            if os.access(args[i], os.R_OK) is False:
-                errors.append(f"File {args[i]} is not readable")
-        elif os.path.isdir(args[i]):
-            if os.access(args[i], os.R_OK) is False:
-                errors.append(f"Directory {args[i]} is not readable")
+        if os.path.isfile(paths[i]):
+            if os.access(paths[i], os.R_OK) is False:
+                errors.append(f"File {paths[i]} is not readable")
+        elif os.path.isdir(paths[i]):
+            if os.access(paths[i], os.R_OK) is False:
+                errors.append(f"Directory {paths[i]} is not readable")
             else:
-                if len(os.listdir(args[i])) == 0:
-                    errors.append(f"Directory {args[i]} is empty")
+                if len(os.listdir(paths[i])) == 0:
+                    errors.append(f"Directory {paths[i]} is empty")
                 else:
-                    for root, folders, files in os.walk(args[i]):
+                    for root, folders, files in os.walk(paths[i]):
 
                         for folder in folders:
                             path = os.path.join(root, folder)
@@ -40,9 +40,10 @@ def validate_paths(args):
                                 errors.append(f"Directory {path} is empty")
 
                         for file in files:
-                            path = os.path.join(root, file)
-                            if os.access(path, os.R_OK) is False:
-                                errors.append(f"File {path} is not readable")
+                            if not file.startswith('.'):
+                                path = os.path.join(root, file)
+                                if os.access(path, os.R_OK) is False:
+                                    errors.append(f"File {path} is not readable")
 
     return errors
 
@@ -104,10 +105,12 @@ def write_to_archive_file(file, paths):
 
 def handle_creare_arhiva_command(args):
     filename = None
-    (args, filename) = handle_custom_args(args, filename)
-    args_validation_errors = validate_paths(args)
+    (paths, filename) = handle_custom_args(args, filename)
+
+    args_validation_errors = validate_paths(paths)
     if len(args_validation_errors) > 0:
         raise IllegalArgumentException("Invalid arguments", "creare_arhiva", args_validation_errors)
 
-    file = create_archive_file(filename)
-    write_to_archive_file(file, args)
+    if len(paths) > 0:
+        archive = None #create_archive_file(filename)
+        write_to_archive_file(archive, paths)
