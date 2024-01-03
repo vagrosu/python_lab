@@ -1,0 +1,1 @@
+Some content for a2.txt file from dir2
