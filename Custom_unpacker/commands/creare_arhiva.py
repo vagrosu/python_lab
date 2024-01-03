@@ -91,10 +91,10 @@ def create_archive_file(filename):
         filename = "archive"
         if os.path.exists(add_extension(filename)):
             i = 1
-            new_filename = f"{filename}({i})"
+            new_filename = f"{filename}_{i}"
             while os.path.exists(add_extension(new_filename)):
                 i += 1
-                new_filename = f"{filename}({i})"
+                new_filename = f"{filename}_{i}"
             filename = new_filename
 
     try:
