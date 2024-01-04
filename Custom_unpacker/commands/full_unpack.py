@@ -77,6 +77,45 @@ def create_destination_directory(destination, archive_filename):
     return destination
 
 
+def unarchive_file(archive_path, destination):
+    try:
+        with open(archive_path, "rb") as archive:
+            content = archive.read()
+
+            start_delimiter = b'<#METADATA_START#>'
+            end_delimiter = b'<#METADATA_END#>'
+
+            index = 0
+
+            while True:
+                start_index = content.find(start_delimiter, index)
+                if start_index == -1:
+                    break
+                end_index = content.find(end_delimiter, start_index)
+                if end_index == -1:
+                    break
+
+                metadata = content[start_index + len(start_delimiter):end_index].decode("utf-8")
+                metadata_parts = metadata.split("&")
+                file_path = metadata_parts[0]
+                file_size = int(metadata_parts[1])
+                # remove newline
+                end_index += 1
+
+                file_content = content[end_index + len(end_delimiter):end_index + len(end_delimiter) + file_size]
+                file_path = os.path.join(destination, file_path)
+
+                if not os.path.exists(os.path.dirname(file_path)):
+                    os.makedirs(os.path.dirname(file_path))
+
+                with open(file_path, "wb") as file:
+                    file.write(file_content)
+
+                index = end_index + len(end_delimiter) + file_size
+    except Exception as e:
+        raise Exception(f"Cannot read archive file {archive_path}: {e}")
+
+
 def handle_full_unpack_command(args):
     destination = None
     (args, destination) = handle_custom_args(args, destination)
@@ -87,3 +126,4 @@ def handle_full_unpack_command(args):
 
     archive_path = args[0]
     destination = create_destination_directory(destination, path_to_filename(archive_path))
+    unarchive_file(archive_path, destination)
