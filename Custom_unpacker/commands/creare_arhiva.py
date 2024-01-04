@@ -48,10 +48,11 @@ def validate_paths(paths):
     return errors
 
 
-def handle_custom_args(args, filename):
+def handle_custom_args(args):
     if len(args) < 1:
         raise IllegalArgumentException("No arguments provided", "creare_arhiva")
 
+    filename = None
     if args[0] == "--help":
         handle_help()
         exit(0)
@@ -135,8 +136,7 @@ def write_to_archive_file(archive, file_paths):
 
 
 def handle_creare_arhiva_command(args):
-    filename = None
-    (paths, filename) = handle_custom_args(args, filename)
+    (paths, filename) = handle_custom_args(args)
 
     args_validation_errors = validate_paths(paths)
     if len(args_validation_errors) > 0:
