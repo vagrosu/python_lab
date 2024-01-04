@@ -86,7 +86,7 @@ def unarchive_file(archive_path, destination):
 
                 index = end_index + len(end_delimiter) + file_size
     except Exception as e:
-        raise Exception(f"Cannot read archive file {archive_path}: {e}")
+        raise Exception(f"Error while unarchiving file {archive_path}: {e}")
 
 
 def handle_full_unpack_command(args):
@@ -99,3 +99,5 @@ def handle_full_unpack_command(args):
     archive_path = args[0]
     destination = create_destination_dir(destination, path_to_filename(archive_path))
     unarchive_file(archive_path, destination)
+
+    print(f"Archive {archive_path} unarchived successfully")
