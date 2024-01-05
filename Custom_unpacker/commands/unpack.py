@@ -5,10 +5,28 @@ from exceptions.IllegalArgumentException import IllegalArgumentException
 
 
 def handle_help():
+    """
+    Prints the help message for the 'unpack' command.
+
+    Returns: None
+    """
     print("Usage: unpack --archive <archive path> [--destination <output dir>] <file name> [<file name> ...]")
 
 
 def handle_custom_args(args):
+    """
+    Processes and validates custom arguments for the 'unpack' command.
+
+    Args:
+        args (list(str)): The list of arguments to process.
+
+    Returns:
+        tuple(list(str), str, str): A tuple containing the remaining arguments, the archive path and the destination
+        directory, if provided.
+
+    Raises:
+        IllegalArgumentException: If the arguments are insufficient.
+    """
     if len(args) < 1:
         raise IllegalArgumentException("No arguments provided", "unpack")
 
@@ -37,6 +55,18 @@ def handle_custom_args(args):
 
 
 def validate_args(args, archive_files, destination):
+    """
+    Checks if each argument is a valid file name in the archive and
+    if the destination directory is valid.
+
+    Args:
+        args (list(str)): The list of arguments to validate.
+        archive_files (list(str)): The list of files in the archive.
+        destination (str): The destination directory to validate.
+
+    Returns:
+        list(str): A list of errors encountered during validation.
+    """
     errors = []
     if len(args) < 1:
         errors.append("No file names provided")
@@ -53,6 +83,19 @@ def validate_args(args, archive_files, destination):
 
 
 def unarchive_file(archive_path, destination, files_to_unarchive):
+    """
+    Unpacks the specified contents of the archive file into the destination directory.
+
+    Args:
+        archive_path (str): The path to the archive file.
+        destination (str): The destination directory to unpack the contents of the archive.
+        files_to_unarchive (list(str)): The list of files to unpack from the archive.
+
+    Returns: None
+
+    Raises:
+        Exception: If an error occurs while unarchiving the file.
+    """
     try:
         with open(archive_path, "rb") as archive:
             content = archive.read()
@@ -94,6 +137,18 @@ def unarchive_file(archive_path, destination, files_to_unarchive):
 
 
 def handle_unpack_command(args):
+    """
+    Processes the command arguments, validates them, and then proceeds
+    to unpack the specified contents of the specified archive into the destination directory.
+
+    Args:
+        args (list(str)): A list of arguments for the 'unpack' command.
+
+    Returns: None
+
+    Raises:
+        IllegalArgumentException: If the arguments are invalid or insufficient.
+    """
     (files_to_unarchive, archive_path, destination) = handle_custom_args(args)
     archive_files = get_archive_files(archive_path)
     args_validation_errors = validate_args(files_to_unarchive, archive_files, destination)

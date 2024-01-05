@@ -5,10 +5,27 @@ from exceptions.IllegalArgumentException import IllegalArgumentException
 
 
 def handle_help():
+    """
+    Prints the help message for the 'full_unpack' command.
+
+    Returns: None
+    """
     print("Usage: full_unpack [--destination <output dir>] <archive path>")
 
 
 def handle_custom_args(args):
+    """
+    Processes and validates custom arguments for the 'full_unpack' command.
+
+    Args:
+        args (list(str)): The list of arguments to process.
+
+    Returns:
+         tuple(list(str), str): A tuple containing the remaining arguments and the destination directory, if provided.
+
+    Raises:
+        IllegalArgumentException: If the arguments are insufficient.
+    """
     if len(args) < 1:
         raise IllegalArgumentException("No arguments provided", "full_unpack")
 
@@ -27,6 +44,16 @@ def handle_custom_args(args):
 
 
 def validate_args(args, destination):
+    """
+    Validates the arguments provided for the 'full_unpack' command.
+
+    Args:
+        args (list(str)): The list of arguments to validate.
+        destination (str): The destination directory to validate.
+
+    Returns:
+        list(str): A list of errors encountered during validation.
+    """
     errors = []
 
     if destination is not None:
@@ -50,6 +77,19 @@ def validate_args(args, destination):
 
 
 def unarchive_file(archive_path, destination):
+    """
+    Unpacks the contents of the archive file into the specified destination directory.
+
+
+    Args:
+        archive_path (str): The path to the archive file.
+        destination (str): The destination directory to unpack the contents of the archive.
+
+    Returns: None
+
+    Raises:
+        Exception: If an error occurs while unpacking the archive.
+    """
     try:
         with open(archive_path, "rb") as archive:
             content = archive.read()
@@ -90,6 +130,18 @@ def unarchive_file(archive_path, destination):
 
 
 def handle_full_unpack_command(args):
+    """
+    Processes the command arguments, validates them, and then proceeds
+    to unpack the contents of the specified archive into the destination directory.
+
+    Args:
+        args (list(str)): A list of arguments for the 'full_unpack' command.
+
+    Returns: None
+
+    Raises:
+        IllegalArgumentException: If the arguments are insufficient or invalid.
+    """
     (args, destination) = handle_custom_args(args)
 
     args_validation_errors = validate_args(args, destination)
